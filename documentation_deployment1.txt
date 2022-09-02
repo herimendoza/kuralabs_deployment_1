@@ -1,0 +1,19 @@
+31.August.2022
+Author: Heriberto Mendoza
+
+Deployment 1: Documentation
+
+Step: Creating EC2
+An EC2 was initialized on AWS Management Console. Specific configuration: A security group was created to open ports 80, 8080 and 22.
+
+Step: Installing and Configuring Jenkins
+It was noted that the Ubuntu distro on amazon already had java installed. Jenkins was added to the EC2 repo and the key file was also imported. Jenkins pkg was then installed. Jenkins was then configured to start on EC2 boot. To configure Jenkins via a GUI, <ec2-public-ip>:8080 was used to access it via web browser. AWS EC2 Access Keys were inputted into Jenkins.
+
+Step: Installing Virtual Environment
+Python2-pip and Python3.10-venv were installed on the Amazon EC2. As this is where Jenkins would be running, this EC2 needed pip and venv to provide a virtual environment so that Jenkins could build and test the app (a python app).
+
+Step; Connecting GitHub to Jenkins server
+The deployment repo was forked to my own GitHub account and then cloned to my local VM. GitHub was also connected to the Jenkins server through a personal access token. This enabled Jenkins to pull the app from the repository. Once the repository was connected, Jenkins took the app from GitHub, built it in the virtual environment EC2 and tested it. All tests passed.
+
+Step: Deploying to Elastic Beanstalk
+A compressed zip file of the deployment files was created using the git archive command on the VM (as the repository was initially cloned with git). The zip folder was transferred to the host computer. An Elastic Beanstalk environment was created; python was specified as the app language of the web server environment. The zip folder was uploaded to Elastic Beanstalk. It was noted that EB worked best on Google Chrome; Safari had a hard time uploading the zip file to EB. Once the environment was created, the app was launched; a link was provided that hosted the url-shortner web app. Key notes on deployment to Elastic Beanstalk: EB logs shows that an entire new instance was created. Further investigation on AWS Console showed that indeed there were two instances running. This second instance was running a python virtual environment upon which the python app (zip file) was running. Terminating the app environment on Elastic Beanstalk first subsequently terminated the new EC2 instance that the app was running on.
